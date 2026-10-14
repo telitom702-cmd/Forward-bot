@@ -16,3 +16,5 @@ class temp(object):
     forwardings = 0
     BANNED_USERS = []
     IS_FRWD_CHAT = []
+
+PORT = int(environ.get("PORT", "8080")
