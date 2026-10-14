@@ -120,12 +120,12 @@ class CLIENT:
      string_session = await client.export_session_string()
      await client.disconnect()
      if len(string_session) < SESSION_STRING_SIZE:
-        return await msg.reply('<b>invalid session sring</b>')
+        return await phone_number_msg.reply('<b>invalid session string</b>')
      try:
        _client = Client("USERBOT", self.api_id, self.api_hash, session_string=string_session)
        client = await _client.start()
      except Exception as e:
-       return await msg.reply_text(f"<b>USER BOT ERROR:</b> `{e}`")
+        return await phone_number_msg.reply_text(f"<b>USER BOT ERROR:</b> `{e}`")
      user = _client.me
      details = {
        'id': user.id,
@@ -207,7 +207,7 @@ async def iter_messages(
     offset: int = 0,
     filters: dict = None,
     max_size: int = None,
-) -> Optional[AsyncGenerator["types.Message", None]]:
+) -> Optional[AsyncGenerator["Message", None]]:
         current = offset
         dup_files = []
         while True:

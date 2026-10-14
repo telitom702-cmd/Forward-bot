@@ -1,11 +1,11 @@
 import asyncio
 import logging
-import os
 
 from aiohttp import web
 from pyrogram import Client, idle
 
-from config import API_ID, API_HASH, BOT_TOKEN, DATABASE_URI, SESSION
+from config import PORT
+from info import API_ID, API_HASH, BOT_TOKEN, DATABASE_URI, SESSION
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,18 +29,17 @@ async def create_web_app():
 
 
 async def start_web_server():
-    port = int(os.environ.get("PORT", "8080"))
     web_app = await create_web_app()
     runner = web.AppRunner(web_app)
     try:
         await runner.setup()
-        site = web.TCPSite(runner, host="0.0.0.0", port=port)
+        site = web.TCPSite(runner, host="0.0.0.0", port=PORT)
         await site.start()
     except Exception:
         await runner.cleanup()
         raise
 
-    LOGGER.config("Web Server started on 0.0.0.0:%s", port)
+    LOGGER.info("Web server started on 0.0.0.0:%s", PORT)
     return runner
 
 
@@ -77,13 +76,13 @@ async def start_bot():
         await app.start()
         app_started = True
         bot_config = await app.get_me()
-        LOGGER.config("Bot started: %s (@%s)", bot_info.first_name, bot_info.username)
+        LOGGER.info("Bot started: %s (@%s)", bot_config.first_name, bot_config.username)
 
         runner = await start_web_server()
-        LOGGER.config("Bot is now running and listening for messages...")
+        LOGGER.info("Bot is now running and listening for messages...")
         await idle()
     finally:
-        LOGGER.config("Stopping bot...")
+        LOGGER.info("Stopping bot...")
         if runner is not None:
             try:
                 await runner.cleanup()

@@ -434,17 +434,21 @@ async def status_msg(bot, msg):
     _, status, est_time, percentage, frwd_id = msg.data.split("#")
     sts = STS(frwd_id)
     if not sts.verify():
-       fetched, forwarded, remaining = 0
-    else:
-       fetched, limit, forwarded = sts.get('fetched'), sts.get('limit'), sts.get('total_files')
-       remaining = limit - fetched 
-    est_time = TimeFormatter(milliseconds=est_time)
-    start_time = sts.get('start')
+       return await msg.answer("This forwarding task has expired.", show_alert=True)
+
+    fetched = sts.get('fetched') or 0
+    limit = sts.get('limit') or 0
+    forwarded = sts.get('total_files') or 0
+    remaining = max(limit - fetched, 0)
+    start_time = sts.get('start') or time.time()
     uptime = await get_bot_uptime(start_time)
-    total = sts.get('limit') - sts.get('fetched')
-    time_to_comple = await complete_time(total)
-    est_time = est_time if (est_time != '' or status not in ['completed', 'cancelled']) else '0 s'
-    return await msg.answer(PROGRESS.format(percentage, fetched, forwarded, remaining, status, time_to_comple, uptime), show_alert=True)
+    time_to_complete = TimeFormatter(milliseconds=est_time) or "0 s"
+    return await msg.answer(
+        Script.PROGRESS.format(
+            percentage, fetched, forwarded, remaining, status, time_to_complete, uptime
+        ),
+        show_alert=True,
+    )
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -533,17 +537,17 @@ async def restart_pending_forwads(bot, user):
           return await m.edit(e)
        try:
           await msg_edit(m, "<code>processing..</code>")
-       except:
+       except Exception:
           return await db.rmve_frwd(user)
-       try: 
+       try:
           await client.get_messages(sts.get("FROM"), sts.get("limit"))
-       except:
-          await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(firwd_id), True)
+       except Exception:
+          await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(forward_id), True)
           return await stop(client, user)
        try:
           k = await client.send_message(i.TO, "Testing")
           await k.delete()
-       except:
+       except Exception:
           await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(forward_id), True)
           return await stop(client, user)
     except:

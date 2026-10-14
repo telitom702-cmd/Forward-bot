@@ -1,10 +1,9 @@
-from flask import Flask
-app = Flask(__name__)
+"""Compatibility entry point; bot.py also serves the HTTP health checks."""
 
-@app.route('/')
-def hello_world():
-    return 'Hello from Koyeb'
+import asyncio
+
+from bot import start_bot
 
 
 if __name__ == "__main__":
-    app.run()
+    asyncio.run(start_bot())

@@ -90,6 +90,14 @@ class  Script(object):
 ║╰━━━━━━━━━━━━━━━➣ 
 ╚════❰ {} ❱══❍⊱❁۪۪
 """
+  PROGRESS = """<b>Forwarding progress</b>
+Progress: <code>{}%</code>
+Fetched: <code>{}</code>
+Forwarded: <code>{}</code>
+Remaining: <code>{}</code>
+Status: <code>{}</code>
+ETA: <code>{}</code>
+Uptime: <code>{}</code>"""
   DUPLICATE_TEXT = """
 ╔════❰ ᴜɴᴇǫᴜɪғʏ sᴛᴀᴛᴜs ❱═❍⊱❁۪۪
 ║╭━━━━━━━━━━━━━━━➣
