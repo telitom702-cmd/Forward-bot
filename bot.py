@@ -5,7 +5,7 @@ import os
 from aiohttp import web
 from pyrogram import Client, idle
 
-from info import API_ID, API_HASH, BOT_TOKEN, DATABASE_URI, SESSION
+from config import API_ID, API_HASH, BOT_TOKEN, DATABASE_URI, SESSION
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,7 +40,7 @@ async def start_web_server():
         await runner.cleanup()
         raise
 
-    LOGGER.info("Web Server started on 0.0.0.0:%s", port)
+    LOGGER.config("Web Server started on 0.0.0.0:%s", port)
     return runner
 
 
@@ -76,14 +76,14 @@ async def start_bot():
     try:
         await app.start()
         app_started = True
-        bot_info = await app.get_me()
-        LOGGER.info("Bot started: %s (@%s)", bot_info.first_name, bot_info.username)
+        bot_config = await app.get_me()
+        LOGGER.config("Bot started: %s (@%s)", bot_info.first_name, bot_info.username)
 
         runner = await start_web_server()
-        LOGGER.info("Bot is now running and listening for messages...")
+        LOGGER.config("Bot is now running and listening for messages...")
         await idle()
     finally:
-        LOGGER.info("Stopping bot...")
+        LOGGER.config("Stopping bot...")
         if runner is not None:
             try:
                 await runner.cleanup()
