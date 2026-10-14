@@ -9,7 +9,6 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument
 import psutil
 import time as time
-from os import environ, execle, system
 
 START_TIME = time.time()
 
@@ -43,8 +42,7 @@ async def restart(client, message):
     msg = await message.reply_text(text="<i>Trying to restarting.....</i>")
     await asyncio.sleep(5)
     await msg.edit("<i>Server restarted successfully ✅</i>")
-    system("git pull -f && pip3 install --no-cache-dir -r requirements.txt")
-    execle(sys.executable, sys.executable, "main.py", environ)
+    os.execv(sys.executable, [sys.executable, "bot.py"])
 
 @Client.on_callback_query(filters.regex(r'^help'))
 async def helpcb(bot, query):
